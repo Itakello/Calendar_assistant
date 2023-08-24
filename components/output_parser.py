@@ -16,7 +16,7 @@ class CustomOutputParser(AgentOutputParser):
             )
         # Parse out the action and action input
         action_pattern = r'Action:\s*(?P<action>\w+)'
-        action_input_pattern = r'Action Input:\s*(?P<action_input>{.*})'
+        action_input_pattern = r'Action Input:\s*(?P<action_input>.*)'
 
         action_match = re.search(action_pattern, raw_output)
         action_input_match = re.search(action_input_pattern, raw_output, re.DOTALL)
@@ -27,5 +27,9 @@ class CustomOutputParser(AgentOutputParser):
             action = action_match.group('action').strip()
         if action_input_match:
             action_input = action_input_match.group('action_input').strip()
+            if action_input == 'None':
+                action_input = ''
+            elif '{' not in action_input:
+                action_input = '{' + action_input + '}'
         # Return the action and action input
         return AgentAction(tool=action, tool_input=action_input, log=raw_output)

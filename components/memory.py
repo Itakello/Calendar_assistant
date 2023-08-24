@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 
 from langchain.schema import AgentAction, BaseMemory
@@ -37,11 +38,29 @@ class CalendarMemory(BaseMemory):
         if 'intermediate_steps' not in inputs or len(inputs['intermediate_steps']) == 0:
             return
         for step in inputs['intermediate_steps'][0]:
-            # TODO find a way to add/update/remove calendars and events based on the step content
-            if (not isinstance(step, AgentAction)) and '"value":' in step:
-                data = json.loads(step)
-                for calendar in data['value']:
-                    new_calendar = Calendar.from_microsoft_graph(calendar)
-                    self.calendars.add_calendar(new_calendar)
+            if isinstance(step, AgentAction):
+                continue
+            if 'DELETE' in step: # No content
+                self.remove_calendar(step)
+            else:
+                self.update_calendars(step)
         return
+    
+    def remove_calendar(self, output: str) -> None:
+        pattern = r'/calendars/(?P<calendar_id>[^/\n]+)'
+        match = re.search(pattern, output)
+        if match:
+            calendar_id = match.group('calendar_id')
+            self.calendars.remove_calendar(calendar_id)
+    
+    def update_calendars(self, output: str) -> None:
+        data = json.loads(output)
+        if 'value' in data.keys():
+            for calendar in data['value']:
+                new_calendar = Calendar.from_microsoft_graph(calendar)
+                self.calendars.add_calendar(new_calendar)
+        else:
+            new_calendar = Calendar.from_microsoft_graph(data)
+            self.calendars.add_calendar(new_calendar)
+            
                         
