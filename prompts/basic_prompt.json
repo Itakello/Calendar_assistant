@@ -1,0 +1,14 @@
+{
+    "input_variables": [
+        "day",
+        "what",
+        "hour",
+        "duration"
+    ],
+    "output_parser": null,
+    "partial_variables": {},
+    "template": "{day} I have to {what} at {hour}. It will last {duration}",
+    "template_format": "f-string",
+    "validate_template": true,
+    "_type": "prompt"
+}

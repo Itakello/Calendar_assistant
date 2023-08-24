@@ -1,0 +1,9 @@
+{
+    "operation_id": "me_calendars_get",
+    "description": "Returns a list of all calendar objects.",
+    "base_url": "https://graph.microsoft.com/v1.0",
+    "path": "/me/calendars",
+    "method": "get",
+    "properties": [],
+    "request_body": null
+}

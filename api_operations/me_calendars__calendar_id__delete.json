@@ -1,0 +1,1 @@
+{"operation_id": "me_calendars__calendar_id__delete", "description": "Delete a calendar object.", "base_url": "https://graph.microsoft.com/v1.0", "path": "/me/calendars/{calendar-id}", "method": "delete", "properties": [{"name": "calendar-id", "required": true, "type": "string", "default": null, "description": null, "location": "path"}], "request_body": null}

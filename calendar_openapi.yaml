@@ -1,0 +1,412 @@
+openapi: 3.0.0
+servers:
+  - url: https://graph.microsoft.com/v1.0
+info:
+  title: Microsoft Graph API
+  version: 1.0.0
+paths:
+  /me/calendars:
+    get:
+      summary: Get the list of calendars.
+      description: Returns a list of all calendar objects. It is the first to call.
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarCollection"
+    post:
+      summary: Create a new calendar.
+      description: Create a new calendar object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Calendar"
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Calendar"
+  /me/calendars/{calendar-id}:
+    patch:
+      summary: Update a calendar.
+      description: Update the properties of a calendar object.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Calendar"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Calendar"
+    delete:
+      summary: Delete a calendar.
+      description: Delete a calendar object.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: successful operation
+  "/me/calendars/{calendar-id}/calendarView":
+    get:
+      summary: Get the list of events in a calendar view defined by a time range.
+      description: Returns the list of all event objects in a calendar view defined by a time range.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDateTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: The start date and time of the time range, represented in ISO 8601 format using the UTC timezone. For example, "2019-11-08T19:00:00-08:00".
+        - name: endDateTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: The end date and time of the time range, represented in ISO 8601 format using the UTC timezone. For example, "2019-11-08T20:00:00-08:00".
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventCollection"
+  "/me/calendars/{calendar-id}/events":
+    post:
+      summary: Create a new event.
+      description: Create a new event object.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+  /me/calendars/{calendar-id}/events/{event-id}:
+    patch:
+      summary: Update an event.
+      description: Update the properties of an event object.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: event-id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+    delete:
+      summary: Delete an event.
+      description: Delete an event object.
+      parameters:
+        - name: calendar-id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: event-id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: successful operation
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+          tokenUrl: https://login.microsoftonline.com/common/oauth2/v2.0/token
+          scopes:
+            openid: Allows users to sign in to the app, and allows the app to read the profile of signed-in users. It also allows the app to sign in the user using Azure AD B2C.
+            offline_access: Allows the app to access and update the signed-in user's data anytime. Access is not restricted to when the user is signed in.
+            Calendars.Read: Allows the app to read events in user calendars.
+            Calendars.ReadWrite: Allows the app to create, read, update, and delete events in user calendars.
+
+  schemas:
+    Calendar:
+      type: object
+      properties:
+        color:
+          type: string
+          description: "Specifies the color theme to distinguish the calendar from other calendars in a UI - auto, lightBlue, lightGreen, lightOrange, lightGray, lightYellow, lightTeal, lightPink, lightBrown, lightRed, maxColor."
+        hexColor:
+          type: string
+          description: The calendar color, expressed in a hex color code of three hexadecimal values, each ranging from 00 to FF and representing the red, green, or blue components of the color in the RGB color space. If the user has never explicitly set a color for the calendar, this property is empty.
+        id:
+          type: string
+          description: The calendar's unique identifier.
+        name:
+          type: string
+          description: The calendar name.
+    ReturnedCalendar:
+      type: object
+      properties:
+    CalendarCollection:
+      type: array
+      items:
+        $ref: "#/components/schemas/Calendar"
+    Event:
+      type: object
+      properties:
+        allowNewTimeProposals:
+          type: boolean
+          description: True if attendees can propose a new time for the event.
+        attendees:
+          type: array
+          description: The attendees of the event.
+          items:
+            type: object
+            properties:
+              emailAddress:
+                type: object
+                description: The email address of the attendee.
+                properties:
+                  address:
+                    type: string
+                    description: The actual email address.
+                  name:
+                    type: string
+                    description: The display name of the email address.
+              type:
+                type: string
+                description: The type of attendee - required, optional, resource.
+        body:
+          type: object
+          description: The body content of the event.
+          properties:
+            content:
+              type: string
+              description: The content of the event body.
+            contentType:
+              type: string
+              description: The type of the content - text or HTML.
+        bodyPreview:
+          type: string
+          description: A preview of the body content of the event.
+        categories:
+          type: array
+          description: The categories associated with the event.
+          items:
+            type: string
+        changeKey:
+          type: string
+          description: Identifies the version of the event object. Every time the event is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object.
+        createdDateTime:
+          type: string
+          format: date-time
+          description: The date and time the event was created.
+        end:
+          type: string
+          format: date-time
+          description: The end time of the event.
+        hasAttachments:
+          type: boolean
+          description: True if the event has attachments.
+        hideAttendees:
+          type: boolean
+          description: True if the event is set to hide the attendees.
+        iCalUId:
+          type: string
+          description: A unique identifier that is shared by all instances of an event across different calendars.
+        id:
+          type: string
+          description: The event's unique identifier.
+        importance:
+          type: string
+          description: The importance of the event - low, normal, high.
+        isAllDay:
+          type: boolean
+          description: True if the event is an all-day event.
+        isCancelled:
+          type: boolean
+          description: True if the event is cancelled.
+        isDraft:
+          type: boolean
+          description: True if the event is a draft.
+        isOnlineMeeting:
+          type: boolean
+          description: True if the event is an online meeting.
+        isOrganizer:
+          type: boolean
+          description: True if the user is the organizer of the event.
+        isReminderOn:
+          type: boolean
+          description: True if a reminder is set for the event.
+        lastModifiedDateTime:
+          type: string
+          format: date-time
+          description: The date and time the event was last modified.
+        location:
+          type: object
+          description: The location of the event.
+          properties:
+            displayName:
+              type: string
+              description: The display name of the location.
+        locations:
+          type: array
+          description: The locations of the event when the event is held in multiple locations.
+          items:
+            type: object
+            properties:
+              displayName:
+                type: string
+                description: The display name of the location.
+        onlineMeeting:
+          type: object
+          description: The details of the online meeting.
+          properties:
+            joinUrl:
+              type: string
+              description: The URL to join the online meeting
+            conferenceId:
+              type: string
+              description: The conference ID of the online meeting.
+            tollNumber:
+              type: string
+              description: The toll number that connects to the online meeting.
+            tollFreeNumber:
+              type: string
+              description: The toll-free number that connects to the online meeting.
+            dialinUrl:
+              type: string
+              description: The URL that connects to the online meeting.
+        onlineMeetingProvider:
+          type: string
+          description: The provider of the online meeting - teamsForBusiness, skypeForBusiness, skypeForConsumer, unknown.
+        onlineMeetingUrl:
+          type: string
+          description: The URL to join the online meeting.
+        organizer:
+          type: object
+          description: The organizer of the event.
+          properties:
+            emailAddress:
+              type: object
+              description: The email address of the organizer.
+              properties:
+                name:
+                  type: string
+                  description: The display name of the organizer.
+                address:
+                  type: string
+                  description: The actual email address of the organizer.
+        originalEndTimeZone:
+          type: string
+          description: The original end time zone of the event.
+        originalStart:
+          type: string
+          format: date-time
+          description: The original start time of the event.
+        originalStartTimeZone:
+          type: string
+          description: The original start time zone of the event.
+        recurrence:
+          type: object
+          description: The pattern of recurrence for the event.
+          properties:
+            pattern:
+              type: object
+              description: The pattern of the recurrence.
+              properties:
+                type:
+                  type: string
+                  description: The type of pattern - daily, weekly, absoluteMonthly, relativeMonthly, absoluteYearly, relativeYearly.
+                interval:
+                  type: integer
+                  description: The interval between occurrences.
+                month:
+                  type: integer
+                  description: The month in which the event recurs.
+                dayOfMonth:
+                  type: integer
+                  description: The day of the month on which the event recurs.
+                firstDayOfWeek:
+                  type: string
+                  description: The first day of the week - sunday, monday, tuesday, wednesday, thursday, friday, saturday.
+                index:
+                  type: string
+                  description: The index of the recurrence - first, second, third, fourth, last.
+            range:
+              type: object
+              description: The range of the recurrence.
+              properties:
+                type:
+                  type: string
+                  description: The type of range - endDate, noEnd, numbered.
+                startDate:
+                  type: string
+                  format: date
+                  description: The start date of the range.
+                endDate:
+                  type: string
+                  format: date
+                  description: The end date of the range.
+                recurrenceTimeZone:
+                  type: string
+                  description: The time zone of the recurrence.
+                numberOfOccurrences:
+                  type: integer
+                  description: The number of occurrences of the event.
+    EventCollection:
+      type: array
+      items:
+        $ref: "#/components/schemas/Event"

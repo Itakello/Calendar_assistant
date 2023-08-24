@@ -1,0 +1,50 @@
+{
+    "operation_id": "me_calendars_post",
+    "description": "Create a new calendar object.",
+    "base_url": "https://graph.microsoft.com/v1.0",
+    "path": "/me/calendars",
+    "method": "post",
+    "properties": [],
+    "request_body": {
+        "description": null,
+        "properties": [
+            {
+                "name": "color",
+                "required": false,
+                "type": "string",
+                "default": null,
+                "description": "Specifies the color theme to distinguish the calendar from other calendars in a UI - auto, lightBlue, lightGreen, lightOrange, lightGray, lightYellow, lightTeal, lightPink, lightBrown, lightRed, maxColor.",
+                "properties": [],
+                "references_used": []
+            },
+            {
+                "name": "hexColor",
+                "required": false,
+                "type": "string",
+                "default": null,
+                "description": "The calendar color, expressed in a hex color code of three hexadecimal values, each ranging from 00 to FF and representing the red, green, or blue components of the color in the RGB color space. If the user has never explicitly set a color for the calendar, this property is empty.",
+                "properties": [],
+                "references_used": []
+            },
+            {
+                "name": "id",
+                "required": false,
+                "type": "string",
+                "default": null,
+                "description": "The calendar's unique identifier.",
+                "properties": [],
+                "references_used": []
+            },
+            {
+                "name": "name",
+                "required": false,
+                "type": "string",
+                "default": null,
+                "description": "The calendar name.",
+                "properties": [],
+                "references_used": []
+            }
+        ],
+        "media_type": "application/json"
+    }
+}
