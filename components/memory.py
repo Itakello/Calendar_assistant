@@ -37,6 +37,7 @@ class CalendarMemory(BaseMemory):
         if 'intermediate_steps' not in inputs or len(inputs['intermediate_steps']) == 0:
             return
         for step in inputs['intermediate_steps'][0]:
+            # TODO find a way to add/update/remove calendars and events based on the step content
             if (not isinstance(step, AgentAction)) and '"value":' in step:
                 data = json.loads(step)
                 for calendar in data['value']:
